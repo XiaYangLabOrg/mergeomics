@@ -35,5 +35,5 @@ job.kda <- kda.start(job.kda)
 job.kda <- kda.prepare(job.kda)
 job.kda <- kda.analyze(job.kda)
 job.kda <- kda.finish(job.kda)
-
-job.kda <- kda2cytoscape(job.kda)
+## ndrivers is the number of key drivers you want to visualize per module
+job.kda <- kda2cytoscape(job.kda, ndrivers=5)
