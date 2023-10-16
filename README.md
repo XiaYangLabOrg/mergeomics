@@ -14,6 +14,8 @@ Developed by: Ville-Petteri Makinen, Le Shu, Yuqi Zhao, Zeyneb Kurt, Bin Zhang, 
 ## About
 Mergeomics is an open source R-based pipeline for multi-dimensional integration of omics data to identify disease-associated pathways and networks. Genes whose network neighborhoods are over-represented with disease associated genes are deemed key drivers and can be targeted in further mechanistic studies.
 
+![abstract figure](https://github.com/jessicading/mergeomics/blob/master/Abstract.jpg?raw=true)
+
 More information can be found in the [paper](https://bmcgenomics.biomedcentral.com/articles/10.1186/s12864-016-3198-9), [documentation](http://bioconductor.org/packages/release/bioc/html/Mergeomics.html), and [web server](http://mergeomics.research.idre.ucla.edu).
 
 ## Tutorial
