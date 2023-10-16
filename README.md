@@ -30,9 +30,11 @@ There are example files for each input and output.
 #### Notes
 All files used are tab delimited text files.
 
-In previous documentations and tutorials, "MARKER" was used as a column name in input files, and this tutorial will still describe associations as "markers" but in input and output files, "LOCUS" will take the place of "MARKER". This is because the particular scripts being used as examples here use "LOCUS" and not "MARKER" column names. This can be modified by the user in their own analysis. 
+- A new version of the Mergeomics R package will be released which fixes minor bugs and improves results output. We suggest using source(Mergeomics_Version_1.99.Oct23.R) for the updated functions.
+- All input files should be tab delimited .txt files.
+- The term 'marker' is used to refer to any type of biological marker including loci, methylation/epigenetic sites, transcripts/genes, proteins, metabolites, etc.
 
-All scripts except MDF need to source "Mergeomics.R".
+All scripts except MDF need to source "Mergeomics_Version_1.99.Oct23.R".
 
 ### Marker Dependency Filtering
 
