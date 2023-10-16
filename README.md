@@ -43,10 +43,10 @@ Marker dependency filtering (MDF) removes dependent markers and prepares an opti
 As of writing, MDF is done mostly for GWAS data (to correct for linkage disequilibrium). If starting from transcriptomic, proteomic, epigenomic, or metabolomic data, start from MSEA (it is recommended to use the `runMSEA` function to simplify the analysis). 
 
 #### Inputs
-1. ```LOCFILE```: Disease/Phenotype Associated Data <br/> 
+1. ```MARFILE```: Disease/Phenotype Associated Data <br/> 
 This file must have two columns named 'LOCUS' and 'VALUE' where value denotes the association to the trait of interest (p-value). The p-values must be negative log (base 10) transformed (-log P). The higher the value, the stronger the association.
 ```
-LOCUS             VALUE
+MARKER            VALUE
 rs4747841         0.1452
 rs4749917         0.1108
 rs737656          1.3979
@@ -54,7 +54,7 @@ rs737656          1.3979
 2. ```GENFILE```: Mapping File to Connect Markers from Association Data to Genes<br/>
 (ex. eQTLs and/or Encode Information)
 ```
-GENE              LOCUS
+GENE              MARKER
 TSPAN6            rs1204389
 TNMD              rs113630520
 SCYL3             rs72691775
@@ -62,7 +62,7 @@ SCYL3             rs72691775
 3. ```LNKFILE```: Marker Dependency File (ex. Linkage Disequilibirum)<br/>
 LD files can be obtained from the [HapMap consortium](https://www.sanger.ac.uk/resources/downloads/human/hapmap3.html). 
 ```
-LOCUSa            LOCUSb              WEIGHT            
+MARKERa           MARKERb             WEIGHT            
 rs143225517       rs3094315           0.962305
 rs4475691         rs950122            1
 rs4475691         rs3905286           0.921467
@@ -83,7 +83,7 @@ To increase result robustness and conserve memory and time, it is sometimes usef
 # Written by Ville-Petteri Makinen
 #
 #
-LOCFILE="../GWAS/DIAGRAMstage1_T2D.txt"
+MARFILE="../GWAS/DIAGRAMstage1_T2D.txt"
 GENFILE="../resources/mapping/esnps/Adipose_Subcutaneous.txt"
 LNKFILE="../resources/linkage/LD50.1000G.CEU.txt"
 OUTPATH="../MSEA/Data/DIAGRAMstage1_T2D.Adipose_Subcutaneous/"
@@ -104,14 +104,14 @@ nice /u/home/j/jading/project-xyang123/GWAS/MDPRUNE/ldprune /tmp/subset.txt $GEN
 These files serve as inputs for MSEA.
 1. Gene file
 ```
-GENE              LOCUS
+GENE              MARKER
 RESP18	          rs7600417
 RESP18	          rs35083292
 ADPRH	          rs60643107
 ```
 2. Loci file
 ```
-LOCUS             VALUE
+MARKER            VALUE
 rs10000012	  1.9776e+00
 rs1000274	  9.4846e-01
 rs10003931        1.3696e+00
