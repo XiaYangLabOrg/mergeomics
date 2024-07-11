@@ -691,18 +691,34 @@ kda2cytoscape.edges <- function(graph, center, depth, direction) {
 
 #---------------------------------------------------------------------------
 
+hex_to_rgb <- function(hex) {
+  # Remove the hash symbol if present
+  hex <- gsub("#", "", hex)
+  
+  # Convert hex to decimal values
+  rgb <- sapply(seq(1, 5, by = 2), function(x) as.numeric(paste0("0x", substr(hex, x, x+1))))
+  
+  return(paste0("rgb(", paste(rgb, collapse = ","), ")"))
+}
 kda2cytoscape.colorize <- function(noddata, moddata, modpool, palette) {
-
+    require(jsonlite)
     # Google chart service.
-    urlbase <- "http://chart.apis.google.com/chart?cht=p&chs=200x200"
-    urlbase <- paste(urlbase, "chf=bg,s,00000000", sep="&")
+    urlbase <- "https://quickchart.io/chart?c"
+    #urlbase <- paste(urlbase, "{type:'pie',data:{labels:[],datasets:", sep="&")
 
     # Collect module memberships.
     pos <- match(moddata$NODE, noddata$NODE)
     moddata <- moddata[which(pos > 0),c("MODULE","NODE")]
     moddata <- unique(moddata)
-
+    
+    
+    #fixed param
+    legend<-list(display='false')
+    plugins<-list(datalabels=list(display='false'))
+    elements<-list(arc=list(backgroundColor='transparent',borderColor='transparent'))
+    json_param <- list(type='pie',options=list(legend=legend,plugins=plugins,elements=elements))
     # Merge duplicate rows.
+
     if(length(moddata$NODE) > 0){
         st <- tool.aggregate(moddata$NODE)
         blocks <- st$blocks
@@ -713,6 +729,8 @@ kda2cytoscape.colorize <- function(noddata, moddata, modpool, palette) {
         for(k in 1:length(blocks)) {
             chd <- ""
             chco <- ""
+            data<-c()
+            backgroundColor<-c()
             rows <- blocks[[k]]
             mods <- moddata[rows,"MODULE"]
             mods <- intersect(mods, modpool)
@@ -724,18 +742,28 @@ kda2cytoscape.colorize <- function(noddata, moddata, modpool, palette) {
                 c <- palette[which(modpool == mods[i])]
                 c <- gsub("#","",c)
                 if(i < 2) {
-                    chd <- "chd=t:1"
-                    chco <- paste("chco=", c, sep="")
-                    cc <- paste("#", c, sep="")
-                    colors[k] <- cc
-                    sectors[k] <- paste(sectors[k], "1:", c, sep="")
+                  cc <- paste("#", c, sep="")
+                  colors[k] <- cc
+                  sectors[k] <- paste(sectors[k], "1:", c, sep="")
+                  data<-c(data,1)
+                  print(hex_to_rgb(c))
+                  backgroundColor<-c(backgroundColor,hex_to_rgb(c))
                 } else {
-                    chd <- paste(chd, 1, sep=",")
-                    chco <- paste(chco, c, sep="|")
-                    sectors[k] <- paste(sectors[k], ",1:", c, sep="")
+                  chd <- paste(chd, 1, sep=",")
+                  chco <- paste(chco, c, sep="|")
+                  sectors[k] <- paste(sectors[k], ",1:", c, sep="")
+                  data<-c(data,1)
+                  print(print(hex_to_rgb(c)))
+                  backgroundColor<-c(backgroundColor,hex_to_rgb(c))
                 }
             }
-            urls[k] <- paste(urlbase, chd, chco, sep="&")
+            json<-c(json_param,list(data=list(datasets=list(list(data=data,backgroundColor=backgroundColor)))))
+            json<-toJSON(json,auto_unbox = TRUE)
+            json <- gsub('"false"', 'false', json)
+            json <- gsub('\"(\\w+)\":', '\\1:', json)
+            json <- gsub('\"', '\'', json)   
+            
+            urls[k] <- paste(urlbase,json,sep="=")
         }
 
         # keep 1st clr in colors, keep all sectors in sectors
@@ -1525,10 +1553,9 @@ kda.start <- function(job) {
 
     # Convert identities to indices.
     modules <- unique(moddata$MODULE)
-    modinfo <- kda.start.identify(modinfo, "MODULE", modules)
+    #modinfo <- kda.start.identify(modinfo, "MODULE", modules)
     moddata <- kda.start.identify(moddata, "MODULE", modules)
     moddata <- kda.start.identify(moddata, "NODE", job$graph$nodes)
-
     # Collect module members.
     st <- tool.aggregate(moddata$MODULE)
     blocks <- st$blocks
@@ -1608,7 +1635,9 @@ kda.start.modules <- function(job, edgdata) {
     nodes <- character()
     if(job$direction >= 0) nodes <- c(nodes, edgdata$TAIL)
     if(job$direction <= 0) nodes <- c(nodes, edgdata$HEAD)
-
+    nodes
+    moddata$NODE
+    nodes
     # Filter module members.
     pos <- match(moddata$NODE, nodes)
     moddata <- moddata[which(pos > 0),]
