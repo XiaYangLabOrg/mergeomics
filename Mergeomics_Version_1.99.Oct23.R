@@ -762,6 +762,7 @@ kda2cytoscape.colorize <- function(noddata, moddata, modpool, palette) {
             json <- gsub('"false"', 'false', json)
             json <- gsub('\"(\\w+)\":', '\\1:', json)
             json <- gsub('\"', '\'', json)   
+            json <- gsub("data:1,", "data:[1],",json)
             
             urls[k] <- paste(urlbase,json,sep="=")
         }
