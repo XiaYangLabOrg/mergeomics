@@ -1,17 +1,15 @@
-source("../Mergeomics.R")
-
-setwd("~/Desktop/Mergeomics/")
+source("Mergeomics_Version_1.99.Oct23.R")
 
 job.kda <- list()
 job.kda$label<-"wKDA"
 job.kda$folder<-"Results" ## parent folder for results
 ## Input a network
 ## columns: TAIL HEAD WEIGHT
-job.kda$netfile<-"bayesian_network.txt"
+job.kda$netfile<-"bayesian.hs.adipose.txt"
 
 ## Gene sets derived from ModuleMerge, containing two columns, MODULE, 
 ## NODE, delimited by tab 
-job.kda$modfile<-"merged_modules.txt"
+job.kda$modfile<-"glgc.ldl.msea.gene.sets.txt"
 
 ## "0" means we do not consider edge weights while 1 is opposite.
 job.kda$edgefactor<-1
@@ -36,4 +34,4 @@ job.kda <- kda.prepare(job.kda)
 job.kda <- kda.analyze(job.kda)
 job.kda <- kda.finish(job.kda)
 ## ndrivers is the number of key drivers you want to visualize per module
-job.kda <- kda2cytoscape(job.kda, ndrivers=5)
+job.kda <- kda2cytoscape(job.kda, ndrivers=5,borderline = F)
