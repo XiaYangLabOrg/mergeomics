@@ -319,7 +319,7 @@ kda2himmeli.identify <- function(dat, varname, labels) {
 # Written by Zeyneb Kurt 2015, Modified by Jessica Ding 2021
 #
 kda2cytoscape <- function(job, node.list=NULL, modules=NULL, ndrivers=5,
-depth=1) {
+depth=1, borderline=T, bordersize=c(300,400)) {
     # Select top scoring modules.
     cat("\nForwarding KDA results to Cytoscape...\n")
 
@@ -385,7 +385,7 @@ depth=1) {
         rows <- which(drivers$MODULE == mods[i])
         if(length(rows) > 0){
             tmp <- kda2cytoscape.exec(job, drivers[rows,], allmods, palette,
-                                      depth)
+                                      depth,borderline,bordersize)
             if (!is.null(tmp)){
                 edgdata <- rbind(edgdata, tmp$edat)
                 noddata <- rbind(noddata, tmp$vdat)
@@ -558,7 +558,7 @@ depth=1) {
 
 #----------------------------------------------------------------------------
 
-kda2cytoscape.exec <- function(job, drivers, modpool, palette, graph.depth=1){
+kda2cytoscape.exec <- function(job, drivers, modpool, palette, graph.depth=1,borderline=T,bordersize=c(300,400)){
 
   # Create star topology.
   edgdata <- data.frame()
@@ -583,7 +583,7 @@ kda2cytoscape.exec <- function(job, drivers, modpool, palette, graph.depth=1){
   tmp[which(pos > 0),"SIZE"] <- 200
 
   # Trace module memberships.
-  noddata <- kda2cytoscape.colorize(tmp, job$moddata, modpool, palette)
+  noddata <- kda2cytoscape.colorize(tmp, job$moddata, modpool, palette, borderline, bordersize)
 
   if(!is.null(noddata)){
     # Trim edge dataset.
@@ -700,10 +700,13 @@ hex_to_rgb <- function(hex) {
   
   return(paste0("rgb(", paste(rgb, collapse = ","), ")"))
 }
-kda2cytoscape.colorize <- function(noddata, moddata, modpool, palette) {
+kda2cytoscape.colorize <- function(noddata, moddata, modpool, palette, borderline=T, bordersize=c(300,400)){
     require(jsonlite)
     # Google chart service.
-    urlbase <- "https://quickchart.io/chart?c"
+    if(!borderline){
+      bordersize=c(400,400)
+    }
+    urlbase <- paste0("https://quickchart.io/chart?width=",bordersize[1],"&height=",bordersize[2],"&c")
     #urlbase <- paste(urlbase, "{type:'pie',data:{labels:[],datasets:", sep="&")
 
     # Collect module memberships.
